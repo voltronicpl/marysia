@@ -16,6 +16,11 @@ The card uses the entity IDs below by default. If your IDs differ, override them
 
 ```yaml
 type: custom:marysia-card
+name: Marysia
+model: SMS4ENI06E
+grid_options:
+  columns: full
+  rows: auto
 ```
 
 ```yaml
@@ -35,20 +40,21 @@ entities:
   remote_start: binary_sensor.marysia_remote_start
   connectivity: binary_sensor.marysia_lacznosc
   start_in_relative: number.marysia_start_in_relative
-  eco_dry: switch.all_marysia_eco_dry
   half_load: switch.marysia_half_load
   hygiene: switch.marysia_hygiene
   vario_speed: switch.marysia_vario_speed
   child_lock: switch.marysia_blokada_przed_dziecmi
+  door_ajar: null
 ```
 
-Unavailable optional entities are shown as `—`; they do not prevent the card from loading.
+Unavailable optional entities are shown as `—`; they do not prevent the card from loading. `door_ajar` is optional and stays disabled until you map an actual Home Assistant switch for that feature. The device page screenshot did not show an auto-open switch, so do not map the door sensor to this control.
 
 ## Controls
 
 - Click a program name or turn the dial to select a program.
 - **Start** is enabled only when the dishwasher is powered, the door is closed, remote control and remote start are available, and the operation state is ready.
 - **Stop** uses `button.press` on the configured stop entity.
+- Power, child lock, half load, Hygiene+, VarioSpeed+, and any mapped door-ajar option use their Home Assistant switch entities. The delay control adjusts `number.marysia_start_in_relative` using `number.set_value`.
 - The dishwasher illustration follows the door and operation sensors. Falling water is animated only while the operation state is `run`.
 
 Starting remotely still depends on the appliance's Home Connect state and permissions. This card does not bypass the dishwasher's remote-start requirements.
