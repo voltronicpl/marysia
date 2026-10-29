@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths: [marysia.js]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read version from marysia.js
+        id: v
+        run: |
+          VERSION=$(grep -oP 'MARYSIA_VERSION = "\K[^"]+' marysia.js)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Create release if missing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Release v$VERSION already exists"
+          else
+            gh release create "v$VERSION" marysia.js --target "$GITHUB_SHA" --title "v$VERSION" --generate-notes --latest
+          fi
