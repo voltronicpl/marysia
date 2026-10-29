@@ -1,6 +1,6 @@
 # Marysia — zmywarka Bosch Home Connect
 
-Custom Lovelace card for the Bosch SMS4ENI06E dishwasher connected through the official Home Connect integration.
+Custom Lovelace card for the Bosch SMS4ENI06E dishwasher connected through the official Home Connect integration. The layout follows the supplied Bosch reference: dishwasher photo at the left, clickable program dial in the middle, and live status and controls at the right.
 
 The card uses the Home Assistant entities created by the integration. It shows the selected program, operation state, door state, remote-control availability, remaining time and program progress. The program dial selects a program. **Start** starts it through the Home Connect `active_program` select entity; **Stop** presses the dishwasher stop button.
 
@@ -13,11 +13,13 @@ The card uses the Home Assistant entities created by the integration. It shows t
 5. Refresh the browser page.
 
 The card uses the entity IDs below by default. If your IDs differ, override them in the card configuration.
+The matching dishwasher image is included with the HACS card. Use the optional `image` setting to replace it.
 
 ```yaml
 type: custom:marysia-card
 name: Marysia
 model: SMS4ENI06E
+image: /hacsfiles/marysia/images/dishwasher.webp
 grid_options:
   columns: full
   rows: auto
@@ -55,7 +57,7 @@ Unavailable optional entities are shown as `—`; they do not prevent the card f
 - **Start** is enabled only when the dishwasher is powered, the door is closed, remote control and remote start are available, and the operation state is ready.
 - **Stop** uses `button.press` on the configured stop entity.
 - Power, child lock, half load, Hygiene+, VarioSpeed+, and any mapped door-ajar option use their Home Assistant switch entities. The delay control adjusts `number.marysia_start_in_relative` using `number.set_value`.
-- The dishwasher illustration follows the door and operation sensors. Falling water is animated only while the operation state is `run`.
+- The dishwasher photo keeps its original proportions. Animated water appears while the operation state is `run`.
 
 Starting remotely still depends on the appliance's Home Connect state and permissions. This card does not bypass the dishwasher's remote-start requirements.
 
