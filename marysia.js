@@ -50,7 +50,7 @@ const MARYSIA_DEFAULT_ENTITIES = {
   remote_start: "binary_sensor.marysia_remote_start",
   connectivity: "binary_sensor.marysia_lacznosc",
   start_in_relative: "number.marysia_start_in_relative",
-  eco_dry: "switch.all_marysia_eco_dry",
+  door_ajar: null,
   half_load: "switch.marysia_half_load",
   hygiene: "switch.marysia_hygiene",
   vario_speed: "switch.marysia_vario_speed",
@@ -58,38 +58,41 @@ const MARYSIA_DEFAULT_ENTITIES = {
 };
 
 const MARYSIA_STYLES = `
-  :host { display:block; color:var(--primary-text-color,#e8eef4); font-family:var(--paper-font-body1_-_font-family,Roboto,"Segoe UI",sans-serif); }
+  :host { display:block; width:100%; color:var(--primary-text-color,#e8eef4); font-family:var(--paper-font-body1_-_font-family,Roboto,"Segoe UI",sans-serif); }
   * { box-sizing:border-box; }
-  ha-card { overflow:hidden; border-radius:18px; background:var(--ha-card-background,var(--card-background-color,#111a24)); color:inherit; }
-  .fascia { min-height:178px; display:grid; grid-template-columns:minmax(120px,.72fr) minmax(390px,2fr) minmax(260px,1.35fr) auto; align-items:center; gap:16px; padding:15px 20px; color:#edf2f6; background:repeating-linear-gradient(180deg,#ffffff05 0 1px,transparent 1px 4px),linear-gradient(110deg,#30373e,#171c21 47%,#2b3239); }
+  ha-card { width:100%; overflow:hidden; border:1px solid #ffffff18; border-radius:20px; background:var(--ha-card-background,var(--card-background-color,#111a24)); color:inherit; container-type:inline-size; container-name:marysia; }
+  .fascia { min-height:232px; display:grid; grid-template-columns:minmax(260px, .72fr) minmax(0, 1.5fr); align-items:center; gap:24px; padding:20px 28px; color:#edf2f6; background:repeating-linear-gradient(180deg,#ffffff05 0 1px,transparent 1px 4px),linear-gradient(110deg,#30373e,#171c21 47%,#2b3239); }
   .brand { min-width:0; }
-  .logo { font-size:26px; letter-spacing:.15em; font-weight:500; }
+  .brand-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .logo { font-size:25px; letter-spacing:.13em; font-weight:500; white-space:nowrap; }
+  .logo span { color:#b9c5ce; font-size:14px; letter-spacing:.08em; }
   .logo b { color:#ed3843; font-weight:500; }
-  .model { margin-top:8px; color:#b9c3cc; font-size:12px; }
-  .online { display:flex; align-items:center; gap:7px; margin-top:12px; color:#a9d9e8; font-size:11px; }
+  .device-name { margin-top:13px; color:#eef3f7; font-size:25px; font-weight:600; }
+  .model { margin-top:5px; color:#b9c3cc; font-size:13px; }
+  .online { display:flex; align-items:center; gap:7px; margin-top:11px; color:#a9d9e8; font-size:12px; white-space:nowrap; }
   .online-dot { width:7px; height:7px; flex:0 0 auto; border-radius:50%; background:#53dda4; box-shadow:0 0 9px #53dda4a0; }
   .online.offline .online-dot { background:#ec6570; box-shadow:0 0 9px #ec657077; }
-  .dial-area { position:relative; justify-self:center; width:min(100%,450px); height:180px; }
+  .dial-area { position:relative; justify-self:center; width:min(100%,690px); height:205px; }
   .program-list { position:absolute; inset:0; }
-  .program { position:absolute; display:grid; grid-template-columns:9px 1fr; align-items:center; gap:7px; width:142px; min-height:26px; padding:3px 4px; border:0; border-radius:5px; background:transparent; color:#b9c5d0; font:inherit; font-size:11px; text-align:left; cursor:pointer; }
+  .program { position:absolute; display:grid; grid-template-columns:9px 1fr; align-items:center; gap:7px; width:170px; min-height:28px; padding:3px 4px; border:0; border-radius:5px; background:transparent; color:#b9c5d0; font:inherit; font-size:12px; text-align:left; cursor:pointer; }
   .program:hover { color:#fff; background:#ffffff0d; }
   .program:disabled { opacity:.38; cursor:not-allowed; }
   .program.p0 { left:50%; top:0; transform:translateX(-50%); }
-  .program.p1 { right:0; top:25px; }
-  .program.p2 { right:0; top:83px; }
-  .program.p3 { right:0; bottom:8px; }
-  .program.p4 { left:50%; bottom:8px; transform:translateX(-50%); }
-  .program.p5 { left:0; bottom:8px; }
-  .program.p6 { left:0; top:83px; }
+  .program.p1 { right:0; top:32px; }
+  .program.p2 { right:0; top:91px; }
+  .program.p3 { right:20px; bottom:10px; }
+  .program.p4 { left:50%; bottom:0; transform:translateX(-50%); }
+  .program.p5 { left:0; bottom:10px; }
+  .program.p6 { left:0; top:91px; }
   .led { width:6px; height:6px; border-radius:50%; background:#59636c; box-shadow:inset 0 0 3px #000; }
   .program[aria-pressed="true"] { color:#eafaff; }
   .program[aria-pressed="true"] .led { background:#5ed4f2; box-shadow:0 0 9px #5ed4f2,0 0 16px #5ed4f288; }
   .knob-zone { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); }
-  .knob { position:relative; display:block; width:116px; aspect-ratio:1; border:0; border-radius:50%; background:radial-gradient(circle at 34% 28%,#eef2f4 0,#bbc3c9 22%,#75808a 47%,#353d45 64%,#aeb7bf 69%,#515a63 75%,#242a30 100%); box-shadow:0 9px 22px #0009,inset 0 2px 6px #ffffffa0,inset 0 -6px 12px #0008; cursor:pointer; }
+  .knob { position:relative; display:block; width:148px; aspect-ratio:1; border:0; border-radius:50%; background:radial-gradient(circle at 34% 28%,#eef2f4 0,#bbc3c9 22%,#75808a 47%,#353d45 64%,#aeb7bf 69%,#515a63 75%,#242a30 100%); box-shadow:0 9px 22px #0009,inset 0 2px 6px #ffffffa0,inset 0 -6px 12px #0008; cursor:pointer; }
   .knob::before { content:""; position:absolute; inset:9px; border:1px solid #ffffff52; border-radius:50%; box-shadow:inset 0 0 0 1px #0003; }
-  .pointer { position:absolute; top:9px; left:calc(50% - 2px); width:4px; height:17px; border-radius:3px; background:#f7fbff; box-shadow:0 0 8px #ffffffb0; transform-origin:2px 49px; transition:transform .35s ease; }
-  .knob-core { position:absolute; inset:25px; display:grid; place-items:center; border-radius:50%; background:radial-gradient(circle at 35% 30%,#8c969f,#333b43 70%); color:#f6f9fc; box-shadow:inset 0 2px 8px #0009,0 1px 2px #ffffff80; text-align:center; }
-  .knob-core span { max-width:68px; font-size:9px; line-height:1.25; text-shadow:0 1px 3px #000; }
+  .pointer { position:absolute; top:9px; left:calc(50% - 2px); width:4px; height:21px; border-radius:3px; background:#f7fbff; box-shadow:0 0 8px #ffffffb0; transform-origin:2px 67px; transition:transform .35s ease; }
+  .knob-core { position:absolute; inset:31px; display:grid; place-items:center; border-radius:50%; background:radial-gradient(circle at 35% 30%,#8c969f,#333b43 70%); color:#f6f9fc; box-shadow:inset 0 2px 8px #0009,0 1px 2px #ffffff80; text-align:center; }
+  .knob-core span { max-width:78px; font-size:10px; line-height:1.25; text-shadow:0 1px 3px #000; }
   .dial-hint { position:absolute; left:50%; bottom:-1px; transform:translateX(-50%); color:#aebac4; font-size:10px; white-space:nowrap; }
   .screen { min-height:92px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:11px; padding:10px 13px; border:1px solid #ffffff16; border-radius:11px; background:linear-gradient(145deg,#070a0c,#11171b); box-shadow:inset 0 2px 12px #000b; }
   .screen-icons { display:flex; flex-wrap:wrap; gap:10px; color:#aec9d7; font-size:10px; }
@@ -98,9 +101,9 @@ const MARYSIA_STYLES = `
   .screen-meta { border-left:1px solid #ffffff24; padding-left:13px; color:#aebbc5; font-size:10px; line-height:1.65; }
   .screen-meta strong { color:#e7f2f6; font-size:11px; font-weight:500; }
   .connected { justify-self:end; align-self:start; color:#d2e1e9; font-size:11px; white-space:nowrap; }
-  .main { display:grid; grid-template-columns:245px minmax(0,1fr); gap:14px; padding:12px; }
-  .appliance { min-height:320px; position:relative; overflow:hidden; border:1px solid #ffffff12; border-radius:13px; padding:10px; background:linear-gradient(140deg,#242c34,#0b1016 70%); display:flex; align-items:end; justify-content:center; }
-  .dishwasher { position:absolute; left:50%; top:12px; width:min(calc(100% - 28px),222px); height:auto; aspect-ratio:222 / 256; transform:translateX(-50%); overflow:visible; appearance:none; padding:0; border:2px solid #aeb7bb; border-radius:12px; background:linear-gradient(100deg,#747d82,#c4cacc 8%,#8b9499 14%,#aeb6b9 50%,#747d82 94%,#c4cacc); box-shadow:inset 0 0 0 2px #e4e8e969,inset 0 -8px 13px #272e325c,0 10px 20px #0008; }
+  .main { display:grid; grid-template-columns:minmax(260px, .34fr) minmax(0, 1fr); gap:26px; padding:18px 24px 20px; }
+  .appliance { min-height:470px; position:relative; overflow:hidden; border:1px solid #ffffff12; border-radius:15px; padding:12px; background:linear-gradient(140deg,#242c34,#0b1016 70%); display:flex; align-items:end; justify-content:center; }
+  .dishwasher { position:absolute; left:50%; top:18px; width:min(calc(100% - 40px),280px); height:auto; aspect-ratio:222 / 256; transform:translateX(-50%); overflow:visible; appearance:none; padding:0; border:2px solid #aeb7bb; border-radius:12px; background:linear-gradient(100deg,#747d82,#c4cacc 8%,#8b9499 14%,#aeb6b9 50%,#747d82 94%,#c4cacc); box-shadow:inset 0 0 0 2px #e4e8e969,inset 0 -8px 13px #272e325c,0 10px 20px #0008; }
   .machine-top { position:absolute; z-index:3; inset:0 0 auto; height:38px; border-radius:9px 9px 2px 2px; background:linear-gradient(#20272c,#11171c); }
   .machine-top::before { content:"BOSCH"; position:absolute; left:13px; top:14px; color:#e5e9ec; font-size:9px; letter-spacing:.14em; }
   .machine-top::after { content:""; position:absolute; right:13px; top:13px; width:37px; height:9px; border-radius:5px; background:#05080a; box-shadow:inset 0 1px 4px #000; }
@@ -137,7 +140,7 @@ const MARYSIA_STYLES = `
   .machine-caption { position:relative; z-index:4; width:100%; padding:0 4px 1px; text-align:center; color:#edf2f7; }
   .machine-caption small { display:block; color:#9cabb7; font-size:11px; }
   .machine-caption strong { display:block; margin-top:4px; font-size:12px; font-weight:500; }
-  .content { min-width:0; }
+  .content { min-width:0; align-self:center; }
   .heading { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:1px 3px 8px; }
   .kicker { color:var(--secondary-text-color,#9aabbb); font-size:11px; letter-spacing:.08em; }
   h2 { margin:3px 0 0; color:var(--primary-text-color,#e9eff5); font-size:20px; font-weight:500; }
@@ -150,56 +153,84 @@ const MARYSIA_STYLES = `
   .progress-track { height:8px; flex:1; overflow:hidden; border-radius:8px; background:var(--divider-color,#2a3744); }
   .progress-fill { height:100%; width:0; border-radius:inherit; background:#44c6e6; transition:width .3s ease; }
   .percent { min-width:35px; color:var(--primary-text-color,#e9eff5); font-size:12px; text-align:right; }
-  .stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+  .stats { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:9px; }
   .stat { min-height:54px; display:flex; align-items:center; gap:9px; padding:8px 10px; border-radius:11px; background:var(--secondary-background-color,#192533); }
   .stat-icon { width:22px; flex:0 0 22px; color:#a6bac9; font-size:16px; text-align:center; }
   .stat small { display:block; color:var(--secondary-text-color,#9aabbb); font-size:10px; }
   .stat strong { display:block; margin-top:3px; color:var(--primary-text-color,#e9eff5); font-size:12px; font-weight:500; overflow-wrap:anywhere; }
-  .actions { display:grid; grid-template-columns:1.05fr 1fr 1fr 1.3fr; gap:7px; margin-top:8px; }
+  .primary-actions { display:grid; grid-template-columns:1.05fr 1fr .72fr 1.35fr; gap:9px; margin-top:14px; }
   .action { min-height:47px; display:flex; align-items:center; justify-content:center; gap:8px; padding:7px 9px; border:0; border-radius:10px; background:var(--secondary-background-color,#192533); color:var(--primary-text-color,#e9eff5); font:inherit; font-size:12px; text-align:center; }
   button.action { cursor:pointer; }
   button.action:hover:not(:disabled) { filter:brightness(1.12); }
-  .action.start { background:#147b9f; color:#fff; }
+  .action.start { min-height:62px; background:linear-gradient(120deg,#08aedd,#087fa8); color:#fff; box-shadow:0 0 18px #0ba9d344; font-size:15px; }
   .action.stop { color:#c2ccd4; }
-  .action.remote { background:color-mix(in srgb,#38bfe0 15%,var(--secondary-background-color,#192533)); color:#b5e8f7; }
   .action:disabled { opacity:.48; cursor:not-allowed; }
+  .power-action { min-height:62px; justify-content:space-between; padding:10px 14px; border:1px solid #ffffff18; background:linear-gradient(140deg,#202b34,#121a22); }
+  .power-action .power-icon { color:#44c7ed; font-size:23px; }
+  .power-action strong { font-size:12px; font-weight:500; }
+  .switch { position:relative; display:inline-block; width:43px; height:24px; flex:0 0 43px; border:1px solid #596571; border-radius:14px; background:#202a33; transition:background .2s,border-color .2s; }
+  .switch::after { content:""; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#aeb9c2; box-shadow:0 1px 3px #0008; transition:transform .2s,background .2s; }
+  .is-on .switch { border-color:#21c8ed; background:#087da0; }
+  .is-on .switch::after { transform:translateX(19px); background:#f4fbff; }
+  .switch[aria-disabled="true"] { opacity:.38; }
+  .delay-action { min-height:62px; display:flex; align-items:center; gap:10px; padding:9px 12px; border:1px solid #ffffff18; border-radius:11px; background:linear-gradient(140deg,#202b34,#121a22); }
+  .delay-icon { color:#76cdec; font-size:20px; }
+  .delay-label { flex:1; color:#dbe5ec; font-size:12px; }
+  .delay-controls { display:flex; align-items:center; gap:7px; padding:4px; border:1px solid #ffffff1a; border-radius:9px; background:#10171e; }
+  .delay-controls button { width:24px; height:26px; border:0; border-radius:6px; background:#263541; color:#ddecf5; font:inherit; cursor:pointer; }
+  .delay-controls button:disabled { opacity:.35; cursor:not-allowed; }
+  .delay-controls strong { min-width:32px; color:#f1f5f8; font-size:12px; text-align:center; font-weight:500; white-space:nowrap; }
+  .features { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:9px; margin-top:10px; }
+  .feature { min-width:0; min-height:88px; display:grid; grid-template-columns:28px minmax(0,1fr); grid-template-rows:1fr auto; align-items:center; column-gap:8px; padding:11px 12px; border:1px solid #ffffff16; border-radius:11px; background:linear-gradient(140deg,#202a34,#131a21); color:#e4edf3; font:inherit; text-align:left; }
+  .feature:not(:disabled) { cursor:pointer; }
+  .feature:not(:disabled):hover { border-color:#50c8e655; filter:brightness(1.08); }
+  .feature:disabled { cursor:not-allowed; }
+  .feature-icon { grid-row:1 / span 2; color:#55c8ed; font-size:20px; text-align:center; }
+  .feature-label { align-self:end; font-size:12px; line-height:1.3; overflow-wrap:anywhere; }
+  .feature .switch { grid-column:2; justify-self:start; margin-top:6px; }
+  .feature.is-on { border-color:#36c9ed66; background:linear-gradient(140deg,#173747,#131f28); }
   .error { min-height:0; margin-top:0; color:#ff958f; font-size:11px; }
   .error:not(:empty) { margin-top:8px; }
-  .footer { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:8px; padding-top:8px; border-top:1px solid var(--divider-color,#2a3744); }
+  .footer { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:14px; padding-top:12px; border-top:1px solid var(--divider-color,#2a3744); }
   .foot-item { display:flex; align-items:center; gap:8px; min-width:0; padding:2px 9px; border-right:1px solid var(--divider-color,#2a3744); }
   .foot-item:last-child { border:0; }
   .foot-icon { flex:0 0 auto; color:#91a6b8; font-size:14px; }
   .foot-item small { display:block; color:var(--secondary-text-color,#9aabbb); font-size:10px; }
   .foot-item strong { display:block; margin-top:2px; color:var(--primary-text-color,#e9eff5); font-size:11px; font-weight:500; }
-  @media (max-width:900px) {
-    .fascia { grid-template-columns:minmax(125px,.6fr) minmax(350px,1.5fr); gap:12px; padding:14px; }
-    .brand { grid-column:1; grid-row:1; }
-    .dial-area { grid-column:2; grid-row:1 / span 2; width:100%; }
-    .screen { grid-column:1 / -1; grid-row:3; }
-    .connected { display:none; }
-    .main { grid-template-columns:245px minmax(0,1fr); }
-    .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
-    .actions { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @container marysia (max-width:1100px) {
+    .fascia { grid-template-columns:minmax(210px,.65fr) minmax(0,1.35fr); gap:12px; padding:16px; }
+    .main { grid-template-columns:minmax(220px,.36fr) minmax(0,1fr); gap:16px; padding:14px; }
+    .stats { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .features { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .primary-actions { grid-template-columns:repeat(2,minmax(0,1fr)); }
   }
-  @media (max-width:620px) {
+  @container marysia (max-width:760px) {
     .fascia { grid-template-columns:1fr; gap:8px; padding:14px; }
-    .brand,.dial-area,.screen { grid-column:1; }
-    .brand { grid-row:1; }
-    .dial-area { grid-row:2; width:min(100%,450px); height:178px; }
-    .screen { grid-row:3; grid-template-columns:1fr; }
-    .screen-meta { display:none; }
-    .main { grid-template-columns:1fr; padding:10px; }
-    .appliance { min-height:320px; }
+    .brand-head { align-items:flex-start; }
+    .device-name { margin-top:8px; font-size:21px; }
+    .dial-area { width:min(100%,620px); height:200px; }
+    .main { grid-template-columns:1fr; padding:12px; }
+    .appliance { min-height:330px; }
+    .dishwasher { width:min(calc(100% - 40px),230px); }
     .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
-    .footer { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 0; }
-    .foot-item:nth-child(2n) { border-right:0; }
+    .features { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .footer { grid-template-columns:1fr; gap:8px; }
+    .foot-item { border-right:0; }
   }
-  @media (max-width:380px) {
-    .program { width:122px; font-size:10px; }
+  @container marysia (max-width:460px) {
+    .brand-head { display:block; }
+    .online { margin-top:7px; }
+    .program { width:126px; font-size:10px; }
     .program.p0,.program.p4 { width:142px; }
-    .stats,.actions { grid-template-columns:1fr 1fr; }
+    .knob { width:120px; }
+    .pointer { transform-origin:2px 55px; }
+    .knob-core { inset:25px; }
+    .dial-area { height:178px; }
+    .features,.primary-actions { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stats { gap:6px; }
     .stat { padding:7px; }
-    .foot-item { padding:2px 5px; }
+    .delay-action { grid-column:1 / -1; }
+    .footer { margin-top:8px; }
   }
   @media (prefers-reduced-motion:reduce) {
     .pointer,.progress-fill,.door { transition:none; }
@@ -243,6 +274,8 @@ class MarysiaCard extends HTMLElement {
   }
 
   getCardSize() { return 8; }
+
+  getGridOptions() { return { columns: "full", rows: "auto" }; }
 
   static getStubConfig() {
     return { name: "Marysia", model: "SMS4ENI06E" };
@@ -304,6 +337,26 @@ class MarysiaCard extends HTMLElement {
     const unit = entity.attributes?.unit_of_measurement || "";
     if (Number.isFinite(numeric)) return unit ? `${numeric} ${unit}` : raw;
     return raw;
+  }
+
+  _delayText() {
+    const entity = this._entity("start_in_relative");
+    if (!entity || ["unknown", "unavailable", ""].includes(String(entity.state).toLowerCase())) return "—";
+    const value = Number(entity.state);
+    if (!Number.isFinite(value)) return "—";
+    return `${value} ${entity.attributes?.unit_of_measurement || "s"}`;
+  }
+
+  _adjustDelay(direction) {
+    if (!this._isAvailable("start_in_relative")) return;
+    const entity = this._entity("start_in_relative");
+    const current = Number(entity.state);
+    const step = Number(entity.attributes?.step) || 1;
+    const minimum = Number(entity.attributes?.min ?? 0);
+    const maximum = Number(entity.attributes?.max ?? 86400);
+    if (!Number.isFinite(current)) return;
+    const value = Math.max(minimum, Math.min(maximum, current + direction * step));
+    this._call("number", "set_value", { entity_id: this._entities.start_in_relative, value });
   }
 
   _isAvailable(key) {
@@ -390,9 +443,25 @@ class MarysiaCard extends HTMLElement {
     const statusClass = operation === "run" ? "washing" : ["error", "actionrequired", "aborting"].includes(operation) ? "problem" : "";
     const statusLine = door === "open" ? "Drzwi otwarte · zmywarka zatrzymana" : stateText;
     const progressText = progress === null ? "—%" : `${Math.round(progress)}%`;
-    const selectedDisplay = this._prettyState("selected_program", this._entity("selected_program")?.state) === "—"
-      ? program?.label || "—" : program?.label || "—";
     const available = (key) => this._isAvailable(key) ? this._prettyState(key, this._state(key)) : "—";
+    const featureTiles = [
+      ["child_lock", "Blokada dziecięca", "♙"],
+      ["half_load", "Połowa załadunku", "½"],
+      ["hygiene", "Hygiene+", "✣"],
+      ["vario_speed", "VarioSpeed+", "⌁"],
+      ["door_ajar", "Uchylanie drzwi", "↗"],
+    ].map(([key, label, icon]) => {
+      const enabled = this._state(key) === "on";
+      const isAvailable = this._isAvailable(key);
+      return `<button class="feature ${enabled ? "is-on" : ""}" type="button" data-feature="${key}" aria-pressed="${enabled}" ${isAvailable ? "" : "disabled title=\"Brak dostępnej encji Home Connect\""}>
+        <span class="feature-icon" aria-hidden="true">${icon}</span><span class="feature-label">${this._escape(label)}</span><span class="switch" aria-hidden="true"></span>
+      </button>`;
+    }).join("");
+    const delayAvailable = this._isAvailable("start_in_relative");
+    const delayEntity = this._entity("start_in_relative");
+    const delayValue = Number(delayEntity?.state);
+    const delayMin = Number(delayEntity?.attributes?.min ?? 0);
+    const delayMax = Number(delayEntity?.attributes?.max ?? 86400);
     const programButtons = this._programs.map((item, index) => `
       <button class="program p${index % 7}" type="button" data-program="${index}" aria-pressed="${item.key === this._selectedKey}" ${this._entityOption("selected_program", item) ? "" : "disabled"}>
         <span class="led" aria-hidden="true"></span><span>${this._escape(item.label)}</span>
@@ -403,20 +472,15 @@ class MarysiaCard extends HTMLElement {
       <ha-card>
         <header class="fascia">
           <div class="brand">
-            <div class="logo"><b>B</b>OSCH</div>
+            <div class="brand-head"><div class="logo"><b>B</b>OSCH <span>· HOME CONNECT</span></div><div class="online ${connected ? "" : "offline"}"><span class="online-dot"></span>${connected ? "online" : "offline"}</div></div>
+            <div class="device-name">${this._escape(this._config.name || "Marysia")}</div>
             <div class="model">${this._escape(this._config.model || "SMS4ENI06E")}</div>
-            <div class="online ${connected ? "" : "offline"}"><span class="online-dot"></span>Home Connect · ${connected ? "online" : "offline"}</div>
           </div>
           <div class="dial-area">
             <div class="program-list" aria-label="Programy zmywarki">${programButtons}</div>
             <div class="knob-zone"><button class="knob" id="knob" type="button" aria-label="Wybierz następny program"><span class="pointer" style="transform:rotate(${Math.max(0,this._programs.findIndex((item) => item.key === this._selectedKey)) * (360 / this._programs.length)}deg)"></span><span class="knob-core"><span>${this._escape(program?.label || "—")}</span></span></button></div>
             <div class="dial-hint">kliknij gałkę lub nazwę programu</div>
           </div>
-          <div class="screen">
-            <div><div class="screen-icons"><span>${connected ? "◉ Wi‑Fi" : "◌ offline"}</span><span>${door === "open" ? "▣ drzwi otwarte" : "▣ drzwi"}</span><span>${this._escape(stateText)}</span></div><div class="screen-time">${this._escape(this._remainingTime())}</div><div class="screen-note">pozostały czas programu</div></div>
-            <div class="screen-meta">Wybrany program<br><strong>${this._escape(program?.label || "—")}</strong><br>Remote Start · ${remoteStart === "on" ? "gotowy" : "niedostępny"}</div>
-          </div>
-          <div class="connected">● ${connected ? "Połączona" : "Brak połączenia"}</div>
         </header>
         <main class="main">
           <section class="appliance" aria-label="Wizualizacja zmywarki">
@@ -431,25 +495,24 @@ class MarysiaCard extends HTMLElement {
             <div class="heading"><div><div class="kicker">HOME CONNECT</div><h2>${this._escape(this._config.name || "Marysia")}</h2><div class="status"><span class="status-dot ${statusClass}"></span><span>${this._escape(stateText)}</span></div></div><div class="model-tag">${this._escape(this._config.model || "SMS4ENI06E")}</div></div>
             <div class="progress-row"><div class="progress-track" role="progressbar" aria-label="Postęp programu" aria-valuenow="${progress ?? 0}" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" style="width:${progress ?? 0}%"></div></div><div class="percent">${progressText}</div></div>
             <div class="stats">
-              ${this._stat("◈", "Wybrany program", selectedDisplay)}
-              ${this._stat("⌁", "Stan", stateText)}
-              ${this._stat("◷", "Pozostały czas", this._remainingTime())}
+              ${this._stat("◈", "Wybrany program", program?.label || "—")}
               ${this._stat("▣", "Drzwi", doorText)}
+              ${this._stat("◷", "Pozostały czas", this._remainingTime())}
               ${this._stat("◉", "Zdalne sterowanie", available("remote_control"))}
               ${this._stat("●", "Zdalny start", available("remote_start"))}
             </div>
-            <div class="actions">
-              <button class="action" id="power" type="button" ${!this._isAvailable("power") || this._busy ? "disabled" : ""}><span>⏻</span><span>Zasilanie<br><strong>${powerOn ? "Włączone" : "Wyłączone"}</strong></span></button>
-              <button class="action start" id="start" type="button" ${!this._canStart() || this._busy ? "disabled" : ""}><span>▶</span><strong>Start</strong></button>
-              <button class="action stop" id="stop" type="button" ${!this._canStop() || this._busy ? "disabled" : ""}><span>■</span><strong>Stop</strong></button>
-              <div class="action remote"><span>⌁</span><span>Zdalny start<br><strong>${remoteStart === "on" ? "Aktywny" : "Niedostępny"}</strong></span></div>
+            <div class="primary-actions">
+              <button class="action power-action ${powerOn ? "is-on" : ""}" id="power" type="button" aria-pressed="${powerOn}" ${!this._isAvailable("power") || this._busy ? "disabled" : ""}><span class="power-icon" aria-hidden="true">⏻</span><strong>Zasilanie</strong><span class="switch" aria-hidden="true"></span></button>
+              <button class="action start" id="start" type="button" ${!this._canStart() || this._busy ? "disabled" : ""}><span aria-hidden="true">▶</span><strong>Start</strong></button>
+              <button class="action stop" id="stop" type="button" ${!this._canStop() || this._busy ? "disabled" : ""}><span aria-hidden="true">■</span><strong>Stop</strong></button>
+              <div class="delay-action"><span class="delay-icon" aria-hidden="true">◷</span><span class="delay-label">Opóźniony start</span><div class="delay-controls"><button type="button" data-delay="-1" aria-label="Zmniejsz opóźnienie" ${!delayAvailable || !Number.isFinite(delayValue) || delayValue <= delayMin || this._busy ? "disabled" : ""}>−</button><strong>${this._escape(this._delayText())}</strong><button type="button" data-delay="1" aria-label="Zwiększ opóźnienie" ${!delayAvailable || !Number.isFinite(delayValue) || delayValue >= delayMax || this._busy ? "disabled" : ""}>+</button></div></div>
             </div>
+            <div class="features" aria-label="Opcje zmywarki">${featureTiles}</div>
             <div class="error" role="alert">${this._escape(this._error)}</div>
             <div class="footer">
-              ${this._foot("◌", "Łączność", connected ? "Online" : "Offline")}
-              ${this._foot("◷", "Opóźniony start", available("start_in_relative"))}
-              ${this._foot("◉", "VarioSpeed+", available("vario_speed"))}
-              ${this._foot("♧", "Blokada dziecięca", available("child_lock"))}
+              ${this._foot("◌", "Home Connect", connected ? "Online" : "Offline")}
+              ${this._foot("◉", "Zdalne sterowanie", available("remote_control"))}
+              ${this._foot("▶", "Zdalny start", available("remote_start"))}
             </div>
           </section>
         </main>
@@ -471,6 +534,13 @@ class MarysiaCard extends HTMLElement {
     this.shadowRoot.querySelector("#power")?.addEventListener("click", () => {
       if (this._entities.power) this._call("switch", "toggle", { entity_id: this._entities.power });
     });
+    this.shadowRoot.querySelectorAll("[data-feature]").forEach((button) => button.addEventListener("click", () => {
+      const key = button.dataset.feature;
+      if (key && this._isAvailable(key)) this._call("switch", "toggle", { entity_id: this._entities[key] });
+    }));
+    this.shadowRoot.querySelectorAll("[data-delay]").forEach((button) => button.addEventListener("click", () => {
+      this._adjustDelay(Number(button.dataset.delay));
+    }));
   }
 
   _stat(icon, label, value) {
