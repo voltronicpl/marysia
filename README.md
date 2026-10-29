@@ -13,13 +13,12 @@ The card uses the Home Assistant entities created by the integration. It shows t
 5. Refresh the browser page.
 
 The card uses the entity IDs below by default. If your IDs differ, override them in the card configuration.
-The matching dishwasher image is included with the HACS card. Use the optional `image` setting to replace it.
+The matching dishwasher photo is embedded in the card JavaScript, so no additional Lovelace resource is needed. Use the optional `image` setting to replace it.
 
 ```yaml
 type: custom:marysia-card
 name: Marysia
 model: SMS4ENI06E
-image: /hacsfiles/marysia/images/dishwasher.webp
 grid_options:
   columns: full
   rows: auto
