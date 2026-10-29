@@ -1,0 +1,66 @@
+# Marysia — zmywarka Bosch Home Connect
+
+Custom Lovelace card for the Bosch SMS4ENI06E dishwasher connected through the official Home Connect integration.
+
+The card uses the Home Assistant entities created by the integration. It shows the selected program, operation state, door state, remote-control availability, remaining time and program progress. The program dial selects a program. **Start** starts it through the Home Connect `active_program` select entity; **Stop** presses the dishwasher stop button.
+
+## Install with HACS
+
+1. In Home Assistant open **HACS → ⋮ → Custom repositories**.
+2. Add `https://github.com/voltronicpl/marysia` and choose **Dashboard** as the category.
+3. Download **Marysia**.
+4. Add the card to a dashboard. HACS adds its JavaScript resource automatically.
+5. Refresh the browser page.
+
+The card uses the entity IDs below by default. If your IDs differ, override them in the card configuration.
+
+```yaml
+type: custom:marysia-card
+```
+
+```yaml
+type: custom:marysia-card
+name: Marysia
+model: SMS4ENI06E
+entities:
+  power: switch.marysia_power
+  selected_program: select.marysia_selected_program
+  active_program: select.marysia_active_program
+  stop: button.marysia_stop_program
+  door: sensor.marysia_door
+  operation_state: sensor.marysia_operation_state
+  progress: sensor.marysia_program_progress
+  finish_time: sensor.marysia_program_finish_time
+  remote_control: binary_sensor.marysia_remote_control
+  remote_start: binary_sensor.marysia_remote_start
+  connectivity: binary_sensor.marysia_lacznosc
+  start_in_relative: number.marysia_start_in_relative
+  eco_dry: switch.all_marysia_eco_dry
+  half_load: switch.marysia_half_load
+  hygiene: switch.marysia_hygiene
+  vario_speed: switch.marysia_vario_speed
+  child_lock: switch.marysia_blokada_przed_dziecmi
+```
+
+Unavailable optional entities are shown as `—`; they do not prevent the card from loading.
+
+## Controls
+
+- Click a program name or turn the dial to select a program.
+- **Start** is enabled only when the dishwasher is powered, the door is closed, remote control and remote start are available, and the operation state is ready.
+- **Stop** uses `button.press` on the configured stop entity.
+- The dishwasher illustration follows the door and operation sensors. Falling water is animated only while the operation state is `run`.
+
+Starting remotely still depends on the appliance's Home Connect state and permissions. This card does not bypass the dishwasher's remote-start requirements.
+
+## Entity overrides
+
+The `entities` mapping accepts the keys shown in the example. Set an optional entity to `null` to hide its value. The `programs` option can map display labels to the exact option values exposed by your selected-program entity:
+
+```yaml
+type: custom:marysia-card
+programs:
+  - label: Eco 50°
+    option: dishcare_dishwasher_program_eco_50
+```
+
