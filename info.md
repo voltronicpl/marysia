@@ -1,0 +1,1 @@
+Marysia is a Home Assistant Lovelace card for the Bosch SMS4ENI06E dishwasher connected with Home Connect. It includes a fixed-proportion dishwasher illustration, clickable program dial, live status tiles, and Home Connect start/stop controls.
