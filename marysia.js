@@ -236,6 +236,141 @@ const MARYSIA_STYLES = `
     .pointer,.progress-fill,.door { transition:none; }
     .dishwasher[data-state="run"] .water i { animation:none; height:54px; opacity:.9; }
   }
+  /* Layout based on the approved Bosch card reference. */
+  ha-card { border:1px solid #344b5c; border-radius:20px; background:radial-gradient(ellipse at 48% 12%,#1c2b38 0,#111b25 57%,#0d151d 100%); }
+  .stage { display:grid; grid-template-columns:minmax(280px,.9fr) minmax(270px,.8fr) minmax(460px,1.38fr); grid-template-rows:minmax(320px,auto) auto auto; gap:18px 22px; padding:20px 24px 18px; }
+  .left-column { grid-column:1; grid-row:1 / span 2; min-width:0; display:flex; flex-direction:column; }
+  .identity { padding:8px 8px 10px; }
+  .brand-head { justify-content:flex-start; gap:15px; }
+  .logo { display:flex; align-items:center; gap:10px; font-size:18px; letter-spacing:.02em; }
+  .logo-mark { width:34px; height:34px; display:grid; place-items:center; border:2px solid #b8c4cf; border-radius:50%; color:#e8edf2; font-size:18px; font-weight:600; box-shadow:inset 0 0 0 2px #657786; }
+  .logo strong { font-size:21px; letter-spacing:0; font-weight:700; }
+  .logo b { color:#ee2434; font-weight:700; }
+  .logo span:last-child { color:#9bacbd; font-size:14px; letter-spacing:.03em; }
+  .device-line { display:flex; align-items:center; gap:18px; margin-top:14px; }
+  .device-name { margin:0; font-size:28px; line-height:1.1; }
+  .model { margin-top:5px; color:#9caec0; font-size:14px; }
+  .brand-online { display:flex; align-items:center; gap:9px; color:#32e595; font-size:14px; white-space:nowrap; }
+  .brand-online .online-dot { width:14px; height:14px; }
+  .photo-wrap { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .photo-wrap { position:relative; }
+  .machine-photo { display:block; width:min(100%,450px); max-height:540px; object-fit:contain; }
+  .water-overlay { position:absolute; inset:11% 12% 39%; display:none; pointer-events:none; }
+  .water-overlay.active { display:block; }
+  .water-overlay i { position:absolute; top:4%; width:3px; height:20px; border-radius:4px; background:linear-gradient(#d9fbff,#42d9ff 60%,#bbf7ff); box-shadow:0 0 8px #33d3ff,0 0 15px #33d3ff99; animation:photo-spray .68s linear infinite; }
+  .water-overlay i::after { content:""; position:absolute; left:-2px; bottom:-5px; width:7px; height:7px; border-radius:50%; background:#bcf5ff; box-shadow:0 0 8px #4cdcff; }
+  .water-overlay i:nth-child(1) { left:21%; animation-delay:-.21s; }
+  .water-overlay i:nth-child(2) { left:34%; animation-delay:-.5s; }
+  .water-overlay i:nth-child(3) { left:47%; animation-delay:-.08s; }
+  .water-overlay i:nth-child(4) { left:61%; animation-delay:-.37s; }
+  .water-overlay i:nth-child(5) { left:74%; animation-delay:-.61s; }
+  @keyframes photo-spray { 0% { transform:translateY(-4px); opacity:0; } 14% { opacity:1; } 82% { opacity:.9; } 100% { transform:translateY(74px); opacity:0; } }
+  .brand-online.offline { color:#ff7b83; }
+  .dial-column { grid-column:2; grid-row:1; align-self:center; min-width:0; }
+  .dial-area { width:min(100%,390px); height:320px; }
+  .knob { width:190px; background:radial-gradient(circle at 34% 28%,#e5e9eb 0,#aab4ba 23%,#59646c 48%,#252d34 64%,#b8c2c8 69%,#515b63 75%,#232a30 100%); box-shadow:0 7px 20px #0009,inset 0 2px 9px #ffffffad,inset 0 -7px 14px #000b; }
+  .knob::before { inset:10px; border-color:#ffffff77; }
+  .pointer { top:12px; height:29px; width:5px; background:#16c8ef; box-shadow:0 0 13px #0bbbe9; transform-origin:2px 83px; }
+  .knob-core { display:none; }
+  .program { width:142px; grid-template-columns:10px 1fr; gap:7px; color:#d5e0eb; font-size:13px; line-height:1.25; }
+  .program.p0 { top:0; }
+  .program.p0 { display:flex; flex-direction:column-reverse; justify-content:center; align-items:center; gap:7px; width:170px; height:50px; text-align:center; }
+  .program.p1 { top:53px; left:-8px; right:auto; }
+  .program.p2 { top:53px; right:-8px; }
+  .program.p3 { top:140px; left:-17px; right:auto; }
+  .program.p4 { top:140px; right:-12px; bottom:auto; }
+  .program.p5 { bottom:20px; left:-7px; right:auto; }
+  .program.p6 { bottom:20px; right:-3px; left:auto; top:auto; }
+  .program[aria-pressed="true"] { color:#dffaff; font-weight:600; }
+  .led { width:9px; height:9px; background:#66737e; }
+  .program[aria-pressed="true"] .led { width:13px; height:13px; background:#45dbf5; box-shadow:0 0 12px #45dbf5,0 0 23px #45dbf588; }
+  .dial-hint { display:none; }
+  .state-panel { grid-column:3; grid-row:1; align-self:center; min-width:0; padding:20px 20px 0; border:1px solid #2b3d4c; border-radius:18px; background:linear-gradient(145deg,#17232e,#111a23); box-shadow:0 12px 28px #0003,inset 0 1px #ffffff08; }
+  .state-head { display:flex; align-items:center; gap:24px; min-height:112px; padding:0 14px; }
+  .state-check { width:98px; height:98px; display:grid; place-items:center; border:3px solid #10d8b5; border-radius:50%; color:#1ce8b7; font-size:51px; line-height:1; text-shadow:0 0 12px #0ff8bd; box-shadow:0 0 12px #00eac477,inset 0 0 12px #00eac444; }
+  .state-title { color:#edf3fa; font-size:34px; font-weight:650; }
+  .progress-row { margin:15px 0 18px; gap:13px; }
+  .progress-track { height:16px; background:#26333f; }
+  .progress-fill { background:linear-gradient(90deg,#08b5ed,#08d0ef); box-shadow:0 0 10px #08b5ed88; }
+  .percent { min-width:50px; font-size:15px; }
+  .stats { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+  .stat { min-height:106px; display:block; padding:14px 15px; border:1px solid #293947; border-radius:14px; background:linear-gradient(145deg,#192530,#131c25); }
+  .stat-icon { width:auto; display:block; margin-bottom:8px; color:#08bbee; font-size:22px; text-align:left; }
+  .stat small { font-size:13px; }
+  .stat strong { margin-top:3px; font-size:17px; }
+  .control-panel { grid-column:2 / span 2; grid-row:2; min-width:0; }
+  .primary-actions { grid-template-columns:1fr 1fr .95fr; gap:12px; margin:0; }
+  .power-action,.action.start,.action.stop { min-height:82px; border:1px solid #235168; border-radius:14px; }
+  .power-action { padding:13px 20px; }
+  .power-action .power-icon { font-size:34px; }
+  .power-action strong,.action.start strong,.action.stop strong { font-size:17px; }
+  .power-action .switch { width:68px; height:42px; flex-basis:68px; border-radius:24px; }
+  .power-action .switch::after { top:5px; left:5px; width:30px; height:30px; }
+  .power-action.is-on .switch::after { transform:translateX(25px); background:#03caef; box-shadow:0 0 13px #03caef; }
+  .action.start { background:linear-gradient(120deg,#06b8df,#0294c1); box-shadow:0 0 18px #00c4ef55,inset 0 1px #a9f4ff75; font-size:22px; }
+  .action.start span { font-size:36px; }
+  .action.stop { background:linear-gradient(140deg,#202c37,#151e27); font-size:17px; }
+  .action.stop span { color:#99a7b8; font-size:24px; }
+  .delay-action { min-height:0; justify-content:flex-start; padding:0; border:0; border-radius:0; background:transparent; }
+  .features { grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; margin-top:12px; }
+  .feature { min-height:123px; grid-template-columns:1fr; grid-template-rows:1fr auto auto; justify-items:center; gap:0; padding:13px 9px 10px; text-align:center; }
+  .feature-icon { grid-row:auto; font-size:25px; }
+  .feature-label { align-self:center; min-height:38px; font-size:14px; line-height:1.22; }
+  .feature .switch { grid-column:auto; justify-self:center; margin-top:5px; }
+  .feature[data-feature="start_in_relative"] { cursor:default; }
+  .feature[data-feature="start_in_relative"] .delay-controls { grid-column:1; margin-top:5px; }
+  .feature[data-feature="start_in_relative"] .delay-controls button { width:23px; height:22px; }
+  .feature[data-feature="start_in_relative"] .delay-controls strong { min-width:38px; font-size:11px; }
+  .footer { grid-column:1 / -1; grid-row:3; margin:0; padding:0 18px; border:1px solid #293a49; border-radius:15px; background:linear-gradient(120deg,#17232d,#111a23); }
+  .foot-item { min-height:78px; gap:14px; padding:9px 20px; }
+  .foot-icon { width:42px; height:42px; display:grid; place-items:center; border-radius:50%; background:#1d3448; color:#08b9e9; font-size:23px; }
+  .foot-item small { font-size:14px; }
+  .foot-item strong { font-size:15px; }
+  @container marysia (max-width:1100px) {
+    .stage { grid-template-columns:minmax(250px,.9fr) minmax(0,1.25fr); grid-template-rows:auto auto auto auto; gap:16px; padding:16px; }
+    .left-column { grid-column:1; grid-row:1 / span 2; }
+    .dial-column { grid-column:2; grid-row:1; }
+    .state-panel { grid-column:2; grid-row:2; }
+    .control-panel { grid-column:1 / -1; grid-row:3; }
+    .footer { grid-row:4; }
+    .dial-area { height:280px; }
+    .state-check { width:75px; height:75px; font-size:39px; }
+    .state-title { font-size:27px; }
+    .features { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  }
+  @container marysia (max-width:700px) {
+    .stage { grid-template-columns:minmax(0,1fr); padding:12px; gap:12px; }
+    .left-column,.dial-column,.state-panel,.control-panel,.footer { grid-column:1; grid-row:auto; }
+    .left-column { min-height:480px; }
+    .identity { padding:3px 3px 10px; }
+    .logo span:last-child { font-size:11px; }
+    .device-name { font-size:24px; }
+    .machine-photo { max-height:400px; width:min(100%,340px); }
+    .dial-area { width:min(100%,390px); height:265px; }
+    .knob { width:155px; }
+    .pointer { transform-origin:2px 68px; }
+    .program { width:125px; font-size:11px; }
+    .program.p0,.program.p4 { width:140px; }
+    .state-panel { padding:12px 12px 0; }
+    .state-head { min-height:78px; gap:14px; }
+    .state-check { width:65px; height:65px; font-size:34px; }
+    .state-title { font-size:25px; }
+    .stat { min-height:90px; padding:10px; }
+    .stat strong { font-size:14px; }
+    .primary-actions { gap:7px; }
+    .power-action { gap:6px; padding:8px; }
+    .power-action .switch { width:44px; height:28px; flex-basis:44px; }
+    .power-action .switch::after { width:18px; height:18px; top:4px; left:4px; }
+    .power-action.is-on .switch::after { transform:translateX(16px); }
+    .power-action strong,.action.start strong,.action.stop strong { font-size:13px; }
+    .action.start span { font-size:26px; }
+    .features { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+    .feature { min-height:105px; padding:9px 5px; }
+    .feature-label { font-size:12px; }
+    .footer { grid-template-columns:1fr; padding:5px 12px; }
+    .foot-item { min-height:55px; border:0; padding:4px; }
+    .foot-icon { width:34px; height:34px; font-size:19px; }
+  }
 `;
 
 function marysiaNormalize(value) {
@@ -462,6 +597,7 @@ class MarysiaCard extends HTMLElement {
     const delayValue = Number(delayEntity?.state);
     const delayMin = Number(delayEntity?.attributes?.min ?? 0);
     const delayMax = Number(delayEntity?.attributes?.max ?? 86400);
+    const delayTile = `<div class="feature delay-tile"><span class="feature-icon" aria-hidden="true">◷</span><span class="feature-label">Opóźniony start</span><div class="delay-controls"><button type="button" data-delay="-1" aria-label="Zmniejsz opóźnienie" ${!delayAvailable || !Number.isFinite(delayValue) || delayValue <= delayMin || this._busy ? "disabled" : ""}>−</button><strong>${this._escape(this._delayText())}</strong><button type="button" data-delay="1" aria-label="Zwiększ opóźnienie" ${!delayAvailable || !Number.isFinite(delayValue) || delayValue >= delayMax || this._busy ? "disabled" : ""}>+</button></div></div>`;
     const programButtons = this._programs.map((item, index) => `
       <button class="program p${index % 7}" type="button" data-program="${index}" aria-pressed="${item.key === this._selectedKey}" ${this._entityOption("selected_program", item) ? "" : "disabled"}>
         <span class="led" aria-hidden="true"></span><span>${this._escape(item.label)}</span>
@@ -470,52 +606,49 @@ class MarysiaCard extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>${MARYSIA_STYLES}</style>
       <ha-card>
-        <header class="fascia">
-          <div class="brand">
-            <div class="brand-head"><div class="logo"><b>B</b>OSCH <span>· HOME CONNECT</span></div><div class="online ${connected ? "" : "offline"}"><span class="online-dot"></span>${connected ? "online" : "offline"}</div></div>
-            <div class="device-name">${this._escape(this._config.name || "Marysia")}</div>
-            <div class="model">${this._escape(this._config.model || "SMS4ENI06E")}</div>
-          </div>
-          <div class="dial-area">
-            <div class="program-list" aria-label="Programy zmywarki">${programButtons}</div>
-            <div class="knob-zone"><button class="knob" id="knob" type="button" aria-label="Wybierz następny program"><span class="pointer" style="transform:rotate(${Math.max(0,this._programs.findIndex((item) => item.key === this._selectedKey)) * (360 / this._programs.length)}deg)"></span><span class="knob-core"><span>${this._escape(program?.label || "—")}</span></span></button></div>
-            <div class="dial-hint">kliknij gałkę lub nazwę programu</div>
-          </div>
-        </header>
-        <main class="main">
-          <section class="appliance" aria-label="Wizualizacja zmywarki">
-            <button class="dishwasher" id="dishwasher" type="button" data-state="${iconState}" aria-label="Zmywarka ${this._escape(statusLine)}">
-              <span class="machine-top"></span>
-              <span class="cavity"><span class="plate p1"></span><span class="plate p2"></span><span class="plate p3"></span><span class="rack"></span><span class="spray-arm"></span><span class="water" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
-              <span class="door"></span>
-            </button>
-            <div class="machine-caption"><small>Stan zmywarki</small><strong>${this._escape(statusLine)}</strong></div>
+        <div class="stage">
+          <section class="left-column" aria-label="Zmywarka Bosch">
+            <div class="identity">
+              <div class="brand-head"><div class="logo"><span class="logo-mark" aria-hidden="true">H</span><strong><b>B</b>OSCH</strong><span>• HOME CONNECT</span></div></div>
+              <div class="device-line"><div class="device-name">${this._escape(this._config.name || "Marysia")}</div><div class="brand-online ${connected ? "" : "offline"}"><span class="online-dot"></span>${connected ? "online" : "offline"}</div></div>
+              <div class="model">${this._escape(this._config.model || "SMS4ENI06E")}</div>
+            </div>
+            <div class="photo-wrap">
+              <img class="machine-photo" src="${this._escape(this._config.image || "/hacsfiles/marysia/images/dishwasher.webp")}" alt="Otwarta zmywarka Bosch z talerzami">
+              <span class="water-overlay ${iconState === "run" ? "active" : ""}" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            </div>
           </section>
-          <section class="content">
-            <div class="heading"><div><div class="kicker">HOME CONNECT</div><h2>${this._escape(this._config.name || "Marysia")}</h2><div class="status"><span class="status-dot ${statusClass}"></span><span>${this._escape(stateText)}</span></div></div><div class="model-tag">${this._escape(this._config.model || "SMS4ENI06E")}</div></div>
+          <section class="dial-column" aria-label="Wybór programu">
+            <div class="dial-area">
+              <div class="program-list" aria-label="Programy zmywarki">${programButtons}</div>
+              <div class="knob-zone"><button class="knob" id="knob" type="button" aria-label="Wybierz następny program"><span class="pointer" style="transform:rotate(${Math.max(0,this._programs.findIndex((item) => item.key === this._selectedKey)) * (360 / this._programs.length)}deg)"></span><span class="knob-core"><span>${this._escape(program?.label || "—")}</span></span></button></div>
+              <div class="dial-hint">kliknij gałkę lub nazwę programu</div>
+            </div>
+          </section>
+          <section class="state-panel" aria-label="Stan zmywarki">
+            <div class="state-head"><div class="state-check" aria-hidden="true">${operation === "run" ? "↻" : "✓"}</div><div class="state-title">${this._escape(stateText)}</div></div>
             <div class="progress-row"><div class="progress-track" role="progressbar" aria-label="Postęp programu" aria-valuenow="${progress ?? 0}" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" style="width:${progress ?? 0}%"></div></div><div class="percent">${progressText}</div></div>
             <div class="stats">
-              ${this._stat("◈", "Wybrany program", program?.label || "—")}
+              ${this._stat("▤", "Program", program?.label || "—")}
               ${this._stat("▣", "Drzwi", doorText)}
               ${this._stat("◷", "Pozostały czas", this._remainingTime())}
-              ${this._stat("◉", "Zdalne sterowanie", available("remote_control"))}
-              ${this._stat("●", "Zdalny start", available("remote_start"))}
             </div>
+          </section>
+          <section class="control-panel" aria-label="Sterowanie zmywarką">
             <div class="primary-actions">
               <button class="action power-action ${powerOn ? "is-on" : ""}" id="power" type="button" aria-pressed="${powerOn}" ${!this._isAvailable("power") || this._busy ? "disabled" : ""}><span class="power-icon" aria-hidden="true">⏻</span><strong>Zasilanie</strong><span class="switch" aria-hidden="true"></span></button>
               <button class="action start" id="start" type="button" ${!this._canStart() || this._busy ? "disabled" : ""}><span aria-hidden="true">▶</span><strong>Start</strong></button>
               <button class="action stop" id="stop" type="button" ${!this._canStop() || this._busy ? "disabled" : ""}><span aria-hidden="true">■</span><strong>Stop</strong></button>
-              <div class="delay-action"><span class="delay-icon" aria-hidden="true">◷</span><span class="delay-label">Opóźniony start</span><div class="delay-controls"><button type="button" data-delay="-1" aria-label="Zmniejsz opóźnienie" ${!delayAvailable || !Number.isFinite(delayValue) || delayValue <= delayMin || this._busy ? "disabled" : ""}>−</button><strong>${this._escape(this._delayText())}</strong><button type="button" data-delay="1" aria-label="Zwiększ opóźnienie" ${!delayAvailable || !Number.isFinite(delayValue) || delayValue >= delayMax || this._busy ? "disabled" : ""}>+</button></div></div>
             </div>
-            <div class="features" aria-label="Opcje zmywarki">${featureTiles}</div>
+            <div class="features" aria-label="Opcje zmywarki">${featureTiles}${delayTile}</div>
             <div class="error" role="alert">${this._escape(this._error)}</div>
-            <div class="footer">
-              ${this._foot("◌", "Home Connect", connected ? "Online" : "Offline")}
-              ${this._foot("◉", "Zdalne sterowanie", available("remote_control"))}
-              ${this._foot("▶", "Zdalny start", available("remote_start"))}
-            </div>
           </section>
-        </main>
+          <footer class="footer">
+            ${this._foot("◌", "Home Connect", connected ? "Online" : "Offline")}
+            ${this._foot("▯", "Zdalne sterowanie", available("remote_control"))}
+            ${this._foot("▶", "Zdalny start", available("remote_start"))}
+          </footer>
+        </div>
       </ha-card>`;
 
     this.shadowRoot.querySelectorAll(".program").forEach((button) => button.addEventListener("click", () => {
