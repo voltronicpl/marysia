@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches: [main]
-    paths: [marysia.js]
+    paths: [marysia.js, .github/workflows/release.yml]
   workflow_dispatch:
 
 permissions:
